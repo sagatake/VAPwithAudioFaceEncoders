@@ -14,9 +14,9 @@ We extended the code from [Inoue's real-time VAP repository](https://github.com/
 - Cudatoolkit 11.8
 
 For other requirements, please take a look at the following env files.
-1. envs/py311_rvap.yml
-2. envs/requirements.txt
-3. envs/requirements_cu118
+1. env/py311_rvap.yml
+2. env/requirements.txt
+3. env/requirements_cu118
 
 # Install
 
