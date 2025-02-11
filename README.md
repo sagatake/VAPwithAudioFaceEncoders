@@ -1,4 +1,4 @@
-# VAPbyAudioFaceEncoders
+# VAPwithAudioFaceEncoders
 
 This repository is the official implementation of the voice activity projection (VAP) model, which is enhanced by audio and face encoders.
 
