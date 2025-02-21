@@ -10,12 +10,17 @@ Please prepare the following environment beforehand
 - Ubuntu 20.04
 - Conda
 
+As an exception, we used Windows 11 for facial image sequence extraction.
+
 ## Installation
 
 1. `conda env create py311_rvap.yml`
 2. `pip install -r requirements.txt`
 3. `pip install -r requirements_cu118 --index-url https://download.pytorch.org/whl/cu118`
 4. copy files in `asset` directory from [Inoue's real-time VAP repository](https://github.com/inokoj/VAP-Realtime) into `asset` directory this repository
+
+For facial image sequence extraction on Windows 11, please install with the following.
+`conda env create py311_dlib.yml`
 
 ## Pretrained models
 
@@ -40,10 +45,20 @@ noxi_orig
 --- vad_novice.txt
 ```
 
+Place video data as follows from the NoXi dataset.
+```
+face_extract/src_paris
+- Paris_01-video_expert.mp4
+- Paris_01-video_novice.mp4
+```
+
+Download [mmod_human_face_detector.dat](https://dlib.net/files/mmod_human_face_detector.dat.bz2) and [shapre_predictor_5_face_landmarks.dat](https://dlib.net/files/shape_predictor_5_face_landmarks.dat.bz2) from dlib and place it into `face_extract`.
+
 Extract cropped face image sequences as follows.
 ```
-conda activate py311_rvap
-dadada
+conda activate py311_dlib
+cd face_extract
+python preprocess_face_dlib.py
 ```
 
 Run the following command to prepare for the training.
