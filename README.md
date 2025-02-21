@@ -28,6 +28,8 @@ You can download pretrained models from [here](https://drive.google.com/drive/fo
 
 ## Training
 
+### 1. Preparation on Ubuntu and Windows
+
 You need to download the NoXi dataset (at least the Paris subset is required).
 - mainly from [here](https://multimediate-challenge.org/datasets/Dataset_NoXi/).
 - for preprocessed nonverbal features (AU, gaze, head pose, body joint), from [here](https://github.com/ahclab/turntaking)
@@ -45,7 +47,9 @@ noxi_orig
 --- vad_novice.txt
 ```
 
-Place video data as follows from the NoXi dataset.
+### 2. Preparation on Windows
+
+Place video data as follows from the NoXi dataset (You might need to rename files).
 ```
 face_extract/src_paris
 - Paris_01-video_expert.mp4
@@ -61,6 +65,10 @@ cd face_extract
 python preprocess_face_dlib.py
 ```
 
+Copy the extracted face image sequences in `noxi` on Windows to `noxi` on Ubuntu.
+
+### 3. Preparation on Ubuntu again
+
 Run the following command to prepare for the training.
 ```
 conda activate py311_rvap
@@ -68,6 +76,7 @@ python noxi_00_modify_format.py
 python noxi_01_filter_csv_by_keyword.py
 python noxi_02_add_face_image.py
 ```
+### 4. Start training
 
 Start the training.
 ```
