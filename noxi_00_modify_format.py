@@ -35,6 +35,8 @@ def main():
     files = [x for x in src_dir.glob('**/*') if x.is_file()]
     # files = [x for x in src_dir.glob('**/*') if x.is_dir()]
     
+    files = [x for x in files if x != '.gitkeep']
+    
     # pp.pprint(files)
 
     data_list = [
