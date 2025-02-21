@@ -100,6 +100,7 @@ You can change `devices` if you use one GPU setting.
 
 You can evaluate the pretrained model with the following command.
 ```
+conda install py311_rvap
 python evaluation.py \
 --data_train_path noxi/train_paris_ext.csv --data_val_path noxi/valid_paris_ext.csv --data_test_path noxi/test_paris_ext.csv \
 --data_use_cache --data_exclude_av_cache --data_preload_av --data_cache_dir tmp_cache4 \
