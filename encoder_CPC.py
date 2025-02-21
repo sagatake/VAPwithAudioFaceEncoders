@@ -30,7 +30,6 @@ Explicit checkpoint path saved manually in "assets/" see CHECKPOINTS below.
 
 CHECKPOINTS = {
     "cpc": join(repo_root(), "assets/checkpoints/cpc/60k_epoch4-d0f474de.pt")
-    #"cpc": "/n/work1/inoue/cpc_audio/ckpt/kankou-librilight/checkpoint_30.pt"
 }
 NAMES = list(CHECKPOINTS.keys())
 

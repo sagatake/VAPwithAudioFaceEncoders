@@ -78,7 +78,7 @@ class VapConfig:
     # dim_input_nonverbal: int = dim_gaze + dim_head + dim_face + dim_body
     face_only: bool = False
     
-    # Saga2024
+    # 2024
     use_face_encoder: bool = False
     pretrained_face_encoder: str = None
     dim_face_encoder: int = 512

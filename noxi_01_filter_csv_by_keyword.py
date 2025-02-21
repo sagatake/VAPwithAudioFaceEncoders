@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jan 14 14:31:23 2025
 
-@author: takes
 """
 
 from pathlib import Path
