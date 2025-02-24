@@ -24,7 +24,16 @@ For facial image sequence extraction on Windows 11, please install with the foll
 
 ## Pretrained models
 
-You can download pretrained models from [here](https://drive.google.com/drive/folders/1fX7USNGHYPzWhb9xzgylvshNwFW20-eZ?usp=sharing) and put it into `pretrained_models` directory
+You can download pretrained models from [here](https://drive.google.com/drive/folders/1fX7USNGHYPzWhb9xzgylvshNwFW20-eZ?usp=sharing) and put those directories into `pretrained_models` directory.
+
+Once you specify the checkpoint directory in `evaluation.py`, the best model will be selected automatically.
+
+```
+pretrained_models
+- trained_data_audio_paris_256
+- trained_data_onishi_paris_256
+- ...
+```
 
 ## Training
 
