@@ -5,6 +5,7 @@ import os
 from typing import Dict, Union
 from dataclasses import dataclass
 import time
+import math
 
 import torch
 import pytorch_lightning as pl
@@ -18,6 +19,7 @@ from pytorch_lightning.loggers.tensorboard import TensorBoardLogger
 
 from pytorch_lightning.strategies.ddp import DDPStrategy
 from torchmetrics.classification import Accuracy, F1Score
+from torchmetrics.metric import Metric
 
 from datamodule import VapDataModule
 from callbacks import SymmetricSpeakersCallback, AudioAugmentationCallback, ResetEpochCallback, OverrideEpochStepCallback
@@ -487,7 +489,7 @@ def finetune(manager,lock) -> None:
         print('Start learning rate finder')
 
         trainer = pl.Trainer(
-            logger=False,
+            logger=None,
             callbacks=callbacks,
             strategy=strategy,
             # accumulate_grad_batches=dconf.grad_accum,
@@ -790,12 +792,12 @@ class VAPModel(VapGPT, pl.LightningModule):
 
             if len(targets["hs"]) >= 1:
 
-                m["f1"]["hs"].update(preds=preds["hs"].round(), target=targets["hs"])
-                m["acc"]["hs"].update(preds=preds["hs"].round(), target=targets["hs"])
+                m["f1"]["hs"].update(preds=preds["hs"].round().int(), target=targets["hs"])
+                m["acc"]["hs"].update(preds=preds["hs"].round().int(), target=targets["hs"])
                 # print('\n\n1')
                 
-                hs_tuple_preds = hs_tuple_preds + (preds["hs"].round(),)
-                hs_tuple_targets = hs_tuple_targets + (targets["hs"].round(),)
+                hs_tuple_preds = hs_tuple_preds + (preds["hs"].round().int(),)
+                hs_tuple_targets = hs_tuple_targets + (targets["hs"].round().int(),)
         
         if "hs2" in preds:
 
@@ -803,23 +805,23 @@ class VAPModel(VapGPT, pl.LightningModule):
 
                 if len(targets["hs2"]) >= 1:
 
-                    m["f1"]["hs2"].update(preds=preds["hs2"].round(), target=targets["hs2"])
-                    m["acc"]["hs2"].update(preds=preds["hs2"].round(), target=targets["hs2"])
+                    m["f1"]["hs2"].update(preds=preds["hs2"].round().int(), target=targets["hs2"])
+                    m["acc"]["hs2"].update(preds=preds["hs2"].round().int(), target=targets["hs2"])
                     # print('\n\n2')
 
-                    hs_tuple_preds = hs_tuple_preds + (preds["hs2"].round(),)
-                    hs_tuple_targets = hs_tuple_targets + (targets["hs2"].round(),)
+                    hs_tuple_preds = hs_tuple_preds + (preds["hs2"].round().int(),)
+                    hs_tuple_targets = hs_tuple_targets + (targets["hs2"].round().int(),)
                     
         if preds["pred_shift"] is not None:
 
             if len(targets["pred_shift"]) >= 1:
 
-                m["f1"]["sp"].update(preds=preds["pred_shift"].round(), target=targets["pred_shift"])
-                m["acc"]["sp"].update(preds=preds["pred_shift"].round(), target=targets["pred_shift"])
+                m["f1"]["sp"].update(preds=preds["pred_shift"].round().int(), target=targets["pred_shift"])
+                m["acc"]["sp"].update(preds=preds["pred_shift"].round().int(), target=targets["pred_shift"])
                 # print('\n\n4')
 
-                sp_tuple_preds = sp_tuple_preds + (preds["pred_shift"].round(),)
-                sp_tuple_targets = sp_tuple_targets + (targets["pred_shift"].round(),)
+                sp_tuple_preds = sp_tuple_preds + (preds["pred_shift"].round().int(),)
+                sp_tuple_targets = sp_tuple_targets + (targets["pred_shift"].round().int(),)
 
         if "pred_shift2" in preds:
 
@@ -827,22 +829,22 @@ class VAPModel(VapGPT, pl.LightningModule):
 
                 if len(targets["pred_shift2"]) >= 1:
 
-                    m["f1"]["sp2"].update(preds=preds["pred_shift2"].round(), target=targets["pred_shift2"])
-                    m["acc"]["sp2"].update(preds=preds["pred_shift2"].round(), target=targets["pred_shift2"])
+                    m["f1"]["sp2"].update(preds=preds["pred_shift2"].round().int(), target=targets["pred_shift2"])
+                    m["acc"]["sp2"].update(preds=preds["pred_shift2"].round().int(), target=targets["pred_shift2"])
                     # print('\n\n5')
 
-                    sp_tuple_preds = sp_tuple_preds + (preds["pred_shift2"].round(),)
-                    sp_tuple_targets = sp_tuple_targets + (targets["pred_shift2"].round(),)
+                    sp_tuple_preds = sp_tuple_preds + (preds["pred_shift2"].round().int(),)
+                    sp_tuple_targets = sp_tuple_targets + (targets["pred_shift2"].round().int(),)
 
 
         if preds["pred_backchannel"] is not None:
             if len(targets["pred_backchannel"]) >= 1:
-                m["f1"]["bp"].update(preds=preds["pred_backchannel"].round(), target=targets["pred_backchannel"])
-                m["acc"]["bp"].update(preds=preds["pred_backchannel"].round(), target=targets["pred_backchannel"])
+                m["f1"]["bp"].update(preds=preds["pred_backchannel"].round().int(), target=targets["pred_backchannel"])
+                m["acc"]["bp"].update(preds=preds["pred_backchannel"].round().int(), target=targets["pred_backchannel"])
                 # print('\n\n4')
 
-                bp_tuple_preds = bp_tuple_preds + (preds["pred_backchannel"].round(),)
-                bp_tuple_targets = bp_tuple_targets + (targets["pred_backchannel"].round(),)
+                bp_tuple_preds = bp_tuple_preds + (preds["pred_backchannel"].round().int(),)
+                bp_tuple_targets = bp_tuple_targets + (targets["pred_backchannel"].round().int(),)
         
 
         if "pred_backchannel2" in preds:
@@ -851,19 +853,19 @@ class VAPModel(VapGPT, pl.LightningModule):
 
                 if len(targets["pred_backchannel2"]) >= 1:
 
-                    m["f1"]["bp2"].update(preds=preds["pred_backchannel2"].round(), target=targets["pred_backchannel2"])
-                    m["acc"]["bp2"].update(preds=preds["pred_backchannel2"].round(), target=targets["pred_backchannel2"])
+                    m["f1"]["bp2"].update(preds=preds["pred_backchannel2"].round().int(), target=targets["pred_backchannel2"])
+                    m["acc"]["bp2"].update(preds=preds["pred_backchannel2"].round().int(), target=targets["pred_backchannel2"])
                     # print('\n\n6')
 
-                    bp_tuple_preds = bp_tuple_preds + (preds["pred_backchannel2"].round(),)
-                    bp_tuple_targets = bp_tuple_targets + (targets["pred_backchannel2"].round(),)
+                    bp_tuple_preds = bp_tuple_preds + (preds["pred_backchannel2"].round().int(),)
+                    bp_tuple_targets = bp_tuple_targets + (targets["pred_backchannel2"].round().int(),)
 
         if preds["ls"] is not None:
 
             if len(targets["ls"]) >= 1:
 
-                m["f1"]["ls"].update(preds=preds["ls"].round(), target=targets["ls"])
-                m["acc"]["ls"].update(preds=preds["ls"].round(), target=targets["ls"])
+                m["f1"]["ls"].update(preds=preds["ls"].round().int(), target=targets["ls"])
+                m["acc"]["ls"].update(preds=preds["ls"].round().int(), target=targets["ls"])
                 # print('\n\n3')
 
         
@@ -973,10 +975,17 @@ class VAPModel(VapGPT, pl.LightningModule):
         }
         
         log_target_dict = {}
-        for key in candidate_dict.keys():
+        for key, metric in candidate_dict.items():
             # print(key, candidate_dict[key].update_count)
-            if candidate_dict[key].update_count != 0:
-                log_target_dict[key] = candidate_dict[key]
+            if isinstance(metric, Metric):
+                try:
+                    value = metric.compute()
+                    if value is not None and not (isinstance(value, float) and math.isnan(value)):
+                        log_target_dict[key] = metric
+                except (ValueError, RuntimeError):  # compute() fails if no updates
+                    continue
+            else:
+                log_target_dict[key] = metric
         
         self.log_dict(log_target_dict, batch_size=batch_size, on_epoch=True, sync_dist=True)
         
