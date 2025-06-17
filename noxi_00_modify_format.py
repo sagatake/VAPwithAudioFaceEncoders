@@ -35,7 +35,7 @@ def main():
     files = [x for x in src_dir.glob('**/*') if x.is_file()]
     # files = [x for x in src_dir.glob('**/*') if x.is_dir()]
     
-    files = [x for x in files if x != '.gitkeep']
+    files = [x for x in files if '.gitkeep' not in str(x)]
     
     # pp.pprint(files)
 
@@ -54,7 +54,7 @@ def main():
     
     for file in tqdm(files, desc = 'Collecting data src'):
         # print(file.absolute())
-        separated = str(file.absolute()).split('\\')
+        separated = str(file.absolute()).split(os.sep)
         file_name = separated[-1]
         file_id = separated[-2]
         # print(file_id, file_name)
